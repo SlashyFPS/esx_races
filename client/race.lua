@@ -52,7 +52,7 @@ AddEventHandler(event("startRace"), function(raceId)
     Citizen.CreateThread(function()
         while not started do
             Wait(1)
-            RageUI.Text({message = ("Début de la course dans ~r~%s ~s~seconde%s"):format(s, (s > 1 and "s" or ""))})
+            exports['okokNotify']:Alert('Début de la course', ("Début de la course dans ~r~%s ~s~seconde%s"):format(s, (s > 1 and "s" or "")), 5000, 'warning', true)
         end
     end)
     Wait(4500)

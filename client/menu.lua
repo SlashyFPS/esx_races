@@ -21,7 +21,7 @@ local function customGroupDigits(value)
     return left..(num:reverse():gsub('(%d%d%d)','%1' .. "."):reverse())..right
 end
 
-AddEventHandler(event("initMenu"), function()
+--[[AddEventHandler(event("initMenu"), function()
     print(cat)
     RMenu.Add(cat, sub("main"), RageUI.CreateMenu(title, desc, nil, nil, "pablo", "black"))
     RMenu:Get(cat, sub("main")).Closed = function()
@@ -32,16 +32,16 @@ AddEventHandler(event("initMenu"), function()
     RMenu.Add(cat, sub("best"), RageUI.CreateSubMenu(RMenu:Get(cat, sub("main")), title, desc, nil, nil, "pablo", "black"))
     RMenu:Get(cat, sub("best")).Closed = function()
     end
-end)
+end)]]
 
-RegisterNetEvent(event("cbOpenMenu"))
+--[[RegisterNetEvent(event("cbOpenMenu"))
 AddEventHandler(event("cbOpenMenu"), function(raceId, top, ret)
     if isMenuOpened then return end
     isMenuOpened = true
     canInteractWithZones = true
     FreezeEntityPosition(PlayerPedId(), true)
     RageUI.Visible(RMenu:Get(cat, sub("main")), true)
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while isMenuOpened do
             RageUI.IsVisible(RMenu:Get(cat, sub("main")), true, true, true, function()
                 RageUI.Separator(("Course: ~y~%s"):format(Config.races[raceId].label))
@@ -77,4 +77,40 @@ AddEventHandler(event("cbOpenMenu"), function(raceId, top, ret)
             Wait(0)
         end
     end)
+end)]]
+
+RegisterNetEvent(event("cbOpenMenu"))
+AddEventHandler(event("cbOpenMenu"), function(raceId, top, ret)
+    if isMenuOpened then return end
+    isMenuOpened = true
+    canInteractWithZones = true
+    FreezeEntityPosition(PlayerPedId(), true)
+    lib.registerContext({
+        id = 'race_menu',
+        title = 'Course',
+        options = {
+            {
+                title = ('%s ~s~→→'):format(("~g~%s$"):format(customGroupDigits(Config.races[raceId].priceToParticipate))),
+                icon = 'flag',
+                onSelect = function()
+                    RageUI.CloseAll()
+                    isMenuOpened = false
+                    canInteractWithZone = false
+                    FreezeEntityPosition(PlayerPedId(), false)
+                    TriggerServerEvent(event("startRace"), raceId)
+                end,
+                description = 'Appuyez pour démarrer la course'
+            },
+            {
+                title = 'Top 10 des meilleurs temps',
+                description = 'Appuyez pour accéder au top 10 de cette course',
+                icon = 'trophy',
+                onSelect = function()
+                    lib.callContext('top10_menu', raceId, top)
+                end
+            }
+        }
+    })
 end)
+
+

@@ -30,7 +30,7 @@ AddEventHandler(event("servercb"), function(message)
     if message ~= nil then ESX.ShowNotification(message) end
 end)
 
-Citizen.CreateThread(function()
+CreateThread(function()
     TriggerEvent(Config.esxGetter, function(obj)
         ESX = obj
     end)
@@ -51,7 +51,8 @@ Citizen.CreateThread(function()
                 interval = 0
                 DrawMarker(22, pos, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.45, 0.45, 0.45, 255, 178, 23, 255, 55555, false, true, 2, false, false, false, false)
                 if dst <= 1.0 then
-                    ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour accéder au menu de la course")
+                    --ESX.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour accéder au menu de la course")
+                    exports['okokNotify']:Alert('Course', 'Appuyez sur '..INPUT_CONTEXT..' pour accéder au menu de la course', 5000, 'info', true)
                     if IsControlJustPressed(0, 51) then
                         canInteractWithZone = false
                         TriggerServerEvent(event("openMenu"), id)
